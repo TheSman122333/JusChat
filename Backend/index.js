@@ -1,4 +1,5 @@
 const express = require('express');
+const {addUser,removeUser,getUser,getUsersInRoom} = require("./user")
 const app = express();
 const http = require("http");
 const cors = require("cors")
@@ -19,10 +20,22 @@ const io = new Server(server,{
 io.on("connection",(socket)=>{
    console.log(`User connected : ${socket.id}`);
 
-socket.on("join_room", (room)=>{
 
-    socket.join(room);
-    console.log(`User with ID: ${socket.id} joined room:${room}`);
+socket.on("join_room", ({room,username})=>{
+    const user = addUser(socket.id,username,room);
+    // console.log(user)
+
+    socket.emit('message',{user:'Chat Bot',text:`${user.name} welcome to the room ${user.room}`,room:user.room})
+    socket.broadcast.to(user.room).emit('message',{user:'Chat Bot',text:`${user.name} has joined`})
+
+    // console.log(`User with ID: ${socket.id} joined room:${room}`)
+    // console.log(getUsersInRoom(user.room))
+ 
+    socket.join(user.room);
+    socket.to(user.room).emit('user_list',getUsersInRoom(user.room));
+
+
+
 
 })
 
@@ -34,6 +47,13 @@ socket.on("send_msg",(data)=>{
 
 
 socket.on("disconnect",()=>{
+    const user = removeUser(socket.id)
+    if(user){
+        console.log(user);
+        socket.to(user.room).emit('message',{user:'Chat Bot',text:`${user.name} has left the chat`})
+        socket.to(user.room).emit('user_list',getUsersInRoom(user.room));
+    }
+
     console.log("User Disconnected",socket.id);
    })
 })  

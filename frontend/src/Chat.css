@@ -141,6 +141,7 @@
 }
 
 #you #text-msg{
+  color: #f5f5f5;
   background-color: #808da7;
   align-items: end;
   min-width: 40px;
@@ -240,4 +241,9 @@ input[type="file"] {
 
 .label:hover{
   opacity: 0.9;
+}
+
+.online{
+  
+
 }

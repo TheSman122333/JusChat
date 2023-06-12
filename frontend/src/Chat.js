@@ -1,18 +1,16 @@
 import {useState,useEffect} from 'react'
 import Image from './Image';
 import './Chat.css'
+import ReactEmoji from "react-emoji"
 
 function Chat({socket,username,room,onusers}){
     const [typedmsg,Settypedmsg] = useState("");
     const [allmsg,Setallmsg] = useState([]);
     const [file,Setfile] = useState();
-    const [currentUser,SetcurrentUser] = useState([]);
-    const [onlineUser,SetonlineUser] = useState(onusers);
+    const [onlineUser,SetonlineUser] = useState([]);
+    const minutes =  new Date(Date.now()).getMinutes() 
+    const updatedmin = (minutes < 10 ? '0' : '') + minutes;
 
-    const exitRoom = () =>{
-        const updatearry = onlineUser.filter((user) => user !== username)
-        SetonlineUser(updatearry)
-    }
     const sendMsg = async() =>{
         const minutes =  new Date(Date.now()).getMinutes() 
         const updatedmin = (minutes < 10 ? '0' : '') + minutes;
@@ -66,6 +64,28 @@ useEffect(()=>{
 
 },[socket])
 
+useEffect(()=>{
+    socket.on('user_list',(users)=>{
+        SetonlineUser(users);
+        console.log("value of users is this one",users);
+    })
+
+},[socket])
+
+useEffect(()=>{
+    socket.on('message',(message)=>{
+        const msgBot = {
+            room: message.room,
+            username:message.user,
+            type:"text",
+            msg : message.text,
+            time: new Date(Date.now()).getHours() + ":" +
+            updatedmin,    
+        }
+        Setallmsg((object)=>[...object,msgBot]);
+    })
+},[socket]);
+
 
 function rendermessages(message){
     if(message.type ==="file"){
@@ -86,7 +106,7 @@ function rendermessages(message){
                     <span>{message.time}</span>
                 </div>
                   <div id ="text-msg">
-                    {message.msg}
+                    {ReactEmoji.emojify(message.msg)}
                 </div>
                 
                 </div>
@@ -99,7 +119,7 @@ return(
     <div className='chat-container'>
         <div className = "chat-header">
                <p>Live Chat</p>
-               <button onClick ={exitRoom}>Exit</button>
+               <button >Exit</button>
         </div>
 
         <div className = "chat-body">
@@ -123,10 +143,13 @@ return(
         </div>
     </div>
     <div className = "online">
-         {currentUser.map((user)=>{
-            <div>
-                {user}
+         {onlineUser.map((user)=>{
+            return(
+                <div>
+                {user.name}
             </div>
+            )
+           
          })}
     </div>
     </>
