@@ -7,10 +7,10 @@ function App() {
   const [username,Setusername]= useState("");
   const [room, Setroom] = useState("");
   const [dischat,Setdischat] = useState(false);
-  const [onusers,Setonusers] = useState([]);
   const joinRoom = () =>{
     if (username !== ""  && room !== ""){
       socket.emit("join_room",{room,username});
+
       Setdischat(true);
     }
   }
@@ -35,7 +35,7 @@ function App() {
      }}></input>
 
       <button onClick={joinRoom}>Lessgo</button>
-      </div>) : ( <Chat socket = {socket} username = {username} room = {room} onusers = {onusers}/>)}
+      </div>) : ( <Chat socket = {socket} username = {username} room = {room}/>)}
      
     </div>
       
