@@ -6,4 +6,4 @@ Welcome to JusChat! This is an impressive chat application built using React JS 
 
 - **Enhanced Interactivity:** Spice up your chats with animated GIFs, making conversations more lively and engaging.
 
-- **User-Friendly Experience:** Stay updated with automated messages notifying you when someone joins or leaves a room. The user status feature displays who is currently online in each chat room, fostering a sense of presence and facilitating interaction.
+- **User-Friendly Experience:** Stay updated with automated messages notifying you when dsomeone joins or leaves a room. The user status feature displays who is currently online in each chat room, fostering a sense of presence and facilitating interaction.
